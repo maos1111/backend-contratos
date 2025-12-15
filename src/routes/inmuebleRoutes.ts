@@ -6,11 +6,14 @@ import {
   obtenerInmueblePorId,
   obtenerInmuebles,
 } from '../controllers/inmuebleController';
+import { authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.route('/').get(obtenerInmuebles).post(crearInmueble);
-
-router.route('/:id').get(obtenerInmueblePorId).put(actualizarInmueble).delete(eliminarInmueble);
+router.get('/', authMiddleware, obtenerInmuebles);
+router.post('/', authMiddleware, crearInmueble);
+router.get('/:id', authMiddleware, obtenerInmueblePorId);
+router.put('/:id', authMiddleware, actualizarInmueble);
+router.delete('/:id', authMiddleware, eliminarInmueble);
 
 export default router;

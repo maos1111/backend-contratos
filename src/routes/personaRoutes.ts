@@ -6,11 +6,14 @@ import {
   obtenerPersonaPorId,
   obtenerPersonas,
 } from '../controllers/personaController';
+import { authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.route('/').get(obtenerPersonas).post(crearPersona);
-
-router.route('/:id').get(obtenerPersonaPorId).put(actualizarPersona).delete(eliminarPersona);
+router.get('/', authMiddleware, obtenerPersonas);
+router.post('/', authMiddleware, crearPersona);
+router.get('/:id', authMiddleware, obtenerPersonaPorId);
+router.put('/:id', authMiddleware, actualizarPersona);
+router.delete('/:id', authMiddleware, eliminarPersona);
 
 export default router;

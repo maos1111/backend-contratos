@@ -6,11 +6,15 @@ import {
   obtenerContratoPorId,
   obtenerContratos,
 } from '../controllers/contratoController';
+import { authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.route('/').get(obtenerContratos).post(crearContrato);
+router.get('/', obtenerContratos);
+router.get('/:id', obtenerContratoPorId);
 
-router.route('/:id').get(obtenerContratoPorId).put(actualizarContrato).delete(eliminarContrato);
+router.post('/', authMiddleware, crearContrato);
+router.put('/:id', authMiddleware, actualizarContrato);
+router.delete('/:id', authMiddleware, eliminarContrato);
 
 export default router;
