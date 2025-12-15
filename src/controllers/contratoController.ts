@@ -10,10 +10,12 @@ export const obtenerContratos = async (req: Request, res: Response): Promise<voi
       .populate('locatario', 'nombreCompleto documento')
       .populate('inmueble', 'tipo descripcion ubicacion')
       .populate('creadoPor', 'nombre email');
-    
+
     res.json(contratos);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener contratos', error: (error as Error).message });
+    res
+      .status(500)
+      .json({ mensaje: 'Error al obtener contratos', error: (error as Error).message });
   }
 };
 
@@ -26,12 +28,12 @@ export const obtenerContratoPorId = async (req: Request, res: Response): Promise
       .populate('locatario')
       .populate('inmueble')
       .populate('creadoPor', 'nombre email');
-    
+
     if (!contrato) {
       res.status(404).json({ mensaje: 'Contrato no encontrado' });
       return;
     }
-    
+
     res.json(contrato);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener contrato', error: (error as Error).message });
@@ -52,7 +54,7 @@ export const crearContrato = async (req: Request, res: Response): Promise<void> 
       fechaInicio,
       fechaFin,
       monto,
-      creadoPor: req.usuario.id
+      creadoPor: req.usuario.id,
     });
 
     const contratoCompleto = await Contrato.findById(contrato._id)
@@ -77,11 +79,10 @@ export const actualizarContrato = async (req: Request, res: Response): Promise<v
       return;
     }
 
-    const contratoActualizado = await Contrato.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    )
+    const contratoActualizado = await Contrato.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    })
       .populate('locador')
       .populate('locatario')
       .populate('inmueble')
@@ -89,7 +90,9 @@ export const actualizarContrato = async (req: Request, res: Response): Promise<v
 
     res.json(contratoActualizado);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al actualizar contrato', error: (error as Error).message });
+    res
+      .status(500)
+      .json({ mensaje: 'Error al actualizar contrato', error: (error as Error).message });
   }
 };
 
@@ -106,6 +109,8 @@ export const eliminarContrato = async (req: Request, res: Response): Promise<voi
     await Contrato.findByIdAndDelete(req.params.id);
     res.json({ mensaje: 'Contrato eliminado correctamente' });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al eliminar contrato', error: (error as Error).message });
+    res
+      .status(500)
+      .json({ mensaje: 'Error al eliminar contrato', error: (error as Error).message });
   }
 };

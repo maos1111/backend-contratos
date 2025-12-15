@@ -38,7 +38,7 @@ export const crearPersona = async (req: Request, res: Response): Promise<void> =
       nombreCompleto,
       documento,
       email,
-      telefono
+      telefono,
     });
 
     res.status(201).json(persona);
@@ -57,15 +57,16 @@ export const actualizarPersona = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    const personaActualizada = await Persona.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const personaActualizada = await Persona.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     res.json(personaActualizada);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al actualizar persona', error: (error as Error).message });
+    res
+      .status(500)
+      .json({ mensaje: 'Error al actualizar persona', error: (error as Error).message });
   }
 };
 

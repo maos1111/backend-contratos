@@ -8,7 +8,9 @@ export const obtenerInmuebles = async (req: Request, res: Response): Promise<voi
     const inmuebles = await Inmueble.find();
     res.json(inmuebles);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener inmuebles', error: (error as Error).message });
+    res
+      .status(500)
+      .json({ mensaje: 'Error al obtener inmuebles', error: (error as Error).message });
   }
 };
 
@@ -37,7 +39,7 @@ export const crearInmueble = async (req: Request, res: Response): Promise<void> 
       tipo,
       descripcion,
       ubicacion,
-      hectareas
+      hectareas,
     });
 
     res.status(201).json(inmueble);
@@ -56,15 +58,16 @@ export const actualizarInmueble = async (req: Request, res: Response): Promise<v
       return;
     }
 
-    const inmuebleActualizado = await Inmueble.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const inmuebleActualizado = await Inmueble.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     res.json(inmuebleActualizado);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al actualizar inmueble', error: (error as Error).message });
+    res
+      .status(500)
+      .json({ mensaje: 'Error al actualizar inmueble', error: (error as Error).message });
   }
 };
 
@@ -81,6 +84,8 @@ export const eliminarInmueble = async (req: Request, res: Response): Promise<voi
     await Inmueble.findByIdAndDelete(req.params.id);
     res.json({ mensaje: 'Inmueble eliminado correctamente' });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al eliminar inmueble', error: (error as Error).message });
+    res
+      .status(500)
+      .json({ mensaje: 'Error al eliminar inmueble', error: (error as Error).message });
   }
 };
