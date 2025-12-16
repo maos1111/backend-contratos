@@ -1,14 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
-import { ZodSchema, ZodError } from 'zod';
+import { NextFunction, Request, Response } from 'express';
+import { ZodError, ZodSchema } from 'zod';
 
-export const validar = (schema: ZodSchema) => {
+export const validarZod = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       schema.parse(req.body);
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        const errores = error.errors.map((err) => ({
+        const errores = error.issues.map((err) => ({
           campo: err.path.join('.'),
           mensaje: err.message,
         }));

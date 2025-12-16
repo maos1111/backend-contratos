@@ -8,9 +8,9 @@ import Persona from '../models/Persona';
 export const obtenerContratos = async (req: Request, res: Response): Promise<void> => {
   try {
     const contratos = await Contrato.find()
-      .populate('locador', 'nombreCompleto documento')
-      .populate('locatario', 'nombreCompleto documento')
-      .populate('inmueble', 'tipo descripcion ubicacion')
+      .populate('locador')
+      .populate('locatario')
+      .populate('inmueble')
       .populate('creadoPor', 'nombre email');
 
     res.json(contratos);

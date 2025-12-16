@@ -2,8 +2,7 @@ import { z } from 'zod';
 
 export const crearContratoSchema = z.object({
   tipoContrato: z.enum(['alquiler', 'compraventa', 'comodato'], {
-    required_error: 'El tipo de contrato es requerido',
-    invalid_type_error: 'Tipo de contrato inválido',
+    message: 'El tipo de contrato debe ser alquiler, compraventa o comodato',
   }),
   locador: z.string().min(1, 'El locador es requerido'),
   locatario: z.string().min(1, 'El locatario es requerido'),
