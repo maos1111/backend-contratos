@@ -1,40 +1,37 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-
-interface JwtPayload {
-  id: string;
-}
+import { auth } from '../config/firebase';
 
 export const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  let token;
+  try {
+    const authHeader = req.headers.authorization;
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      // Obtener token del header
-      token = req.headers.authorization.split(' ')[1];
-
-      // Verificar token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-
-      // Agregar usuario al request
-      req.usuario = {
-        id: decoded.id,
-        rol: 'usuario',
-      };
-
-      next();
-    } catch (error) {
-      res.status(401).json({ mensaje: 'No autorizado, token inválido' });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.status(401).json({ mensaje: 'No autorizado, no hay token' });
       return;
     }
-  }
 
-  if (!token) {
-    res.status(401).json({ mensaje: 'No autorizado, no hay token' });
+    const token = authHeader.split(' ')[1];
+
+    console.log('aca');
+    // Verificar token con Firebase
+    const decodedToken = await auth.verifyIdToken(token);
+    console.log('aca2');
+
+    console.log('Token verificado:', decodedToken);
+
+    res.locals.usuario = {
+      id: decodedToken.uid,
+      email: decodedToken.email,
+      rol: 'usuario',
+    };
+
+    next();
+  } catch (error) {
+    res.status(401).json({ mensaje: 'No autorizado, token inválido' });
     return;
   }
 };

@@ -44,8 +44,7 @@ export const obtenerContratoPorId = async (req: Request, res: Response): Promise
 // @route   POST /api/contratos
 export const crearContrato = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { tipoContrato, locador, locatario, inmueble, fechaInicio, fechaFin, monto, usuario } =
-      req.body;
+    const { tipoContrato, locador, locatario, inmueble, fechaInicio, fechaFin, monto } = req.body;
 
     const contrato = await Contrato.create({
       tipoContrato,
@@ -55,7 +54,7 @@ export const crearContrato = async (req: Request, res: Response): Promise<void> 
       fechaInicio,
       fechaFin,
       monto,
-      creadoPor: usuario.id,
+      creadoPor: res.locals.usuario?.id,
     });
 
     const contratoCompleto = await Contrato.findById(contrato._id)
