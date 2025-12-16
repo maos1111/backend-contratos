@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Contrato from '../models/Contrato';
+import Inmueble from '../models/Inmueble';
+import Persona from '../models/Persona';
 
 // @desc    Obtener todos los contratos
 // @route   GET /api/contratos
@@ -45,6 +47,15 @@ export const obtenerContratoPorId = async (req: Request, res: Response): Promise
 export const crearContrato = async (req: Request, res: Response): Promise<void> => {
   try {
     const { tipoContrato, locador, locatario, inmueble, fechaInicio, fechaFin, monto } = req.body;
+
+    const locadorExiste = await Persona.findById(locador);
+    if (!locadorExiste) res.status(404).json({ mensaje: 'El locador no existe' });
+
+    const locatarioExiste = await Persona.findById(locatario);
+    if (!locatarioExiste) res.status(404).json({ mensaje: 'El locatario no existe' });
+
+    const inmuebleExiste = await Inmueble.findById(inmueble);
+    if (!inmuebleExiste) res.status(404).json({ mensaje: 'El inmueble no existe' });
 
     const contrato = await Contrato.create({
       tipoContrato,
