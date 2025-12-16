@@ -6,7 +6,7 @@ import userRoutes from './userRoutes';
 
 const router = Router();
 
-router.use('/users', userRoutes);
+router.use('/usuarios', userRoutes);
 router.use('/personas', personaRoutes);
 router.use('/inmuebles', inmuebleRoutes);
 router.use('/contratos', contratoRoutes);

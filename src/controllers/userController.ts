@@ -12,7 +12,7 @@ interface FirebaseAuthResponse {
 }
 
 // @desc    Crear usuario con Firebase (solo para testing)
-// @route   POST /api/users/create
+// @route   POST /api/usuarios/create
 export const crearUsuario = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, nombre } = req.body;
@@ -39,7 +39,7 @@ export const crearUsuario = async (req: Request, res: Response): Promise<void> =
 };
 
 // @desc    Login - Obtener idToken para usar en el backend
-// @route   POST /api/users/login
+// @route   POST /api/usuarios/login
 export const loginUsuario = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email } = req.body;
