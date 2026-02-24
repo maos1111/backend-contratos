@@ -49,13 +49,22 @@ export const crearContrato = async (req: Request, res: Response): Promise<void> 
     const { tipoContrato, locador, locatario, inmueble, fechaInicio, fechaFin, monto } = req.body;
 
     const locadorExiste = await Persona.findById(locador);
-    if (!locadorExiste) res.status(404).json({ mensaje: 'El locador no existe' });
+    if (!locadorExiste) {
+      res.status(404).json({ mensaje: 'El locador no existe' });
+      return;
+    }
 
     const locatarioExiste = await Persona.findById(locatario);
-    if (!locatarioExiste) res.status(404).json({ mensaje: 'El locatario no existe' });
+    if (!locatarioExiste) {
+      res.status(404).json({ mensaje: 'El locatario no existe' });
+      return;
+    }
 
     const inmuebleExiste = await Inmueble.findById(inmueble);
-    if (!inmuebleExiste) res.status(404).json({ mensaje: 'El inmueble no existe' });
+    if (!inmuebleExiste) {
+      res.status(404).json({ mensaje: 'El inmueble no existe' });
+      return;
+    }
 
     const contrato = await Contrato.create({
       tipoContrato,
