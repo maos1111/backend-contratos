@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   actualizarInmueble,
   crearInmueble,
+  desactivarInmueble,
   eliminarInmueble,
   obtenerInmueblePorId,
   obtenerInmuebles,
@@ -16,6 +17,7 @@ router.get('/', authMiddleware, obtenerInmuebles);
 router.post('/', authMiddleware, validarZod(crearInmuebleSchema), crearInmueble);
 router.get('/:id', authMiddleware, obtenerInmueblePorId);
 router.put('/:id', authMiddleware, validarZod(actualizarInmuebleSchema), actualizarInmueble);
+router.patch('/:id/desactivar', authMiddleware, desactivarInmueble);
 router.delete('/:id', authMiddleware, eliminarInmueble);
 
 export default router;
