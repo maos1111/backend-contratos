@@ -18,11 +18,15 @@ const personaSchema = new Schema<IPersona>(
     },
     email: {
       type: String,
-      required: true,
+      required: false,
     },
     telefono: {
       type: String,
-      required: true,
+      required: false,
+    },
+    activo: {
+      type: Boolean,
+      default: true,
     },
   },
   {

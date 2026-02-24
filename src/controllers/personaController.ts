@@ -105,6 +105,8 @@ export const desactivarPersona = async (req: Request, res: Response): Promise<vo
 
     res.json({ mensaje: 'Persona desactivada correctamente', persona: personaDesactivada });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al desactivar persona', error: (error as Error).message });
+    res
+      .status(500)
+      .json({ mensaje: 'Error al desactivar persona', error: (error as Error).message });
   }
 };
