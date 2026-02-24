@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   actualizarPersona,
   crearPersona,
+  desactivarPersona,
   eliminarPersona,
   obtenerPersonaPorId,
   obtenerPersonas,
@@ -16,6 +17,7 @@ router.get('/', authMiddleware, obtenerPersonas);
 router.post('/', authMiddleware, validarZod(crearPersonaSchema), crearPersona);
 router.get('/:id', authMiddleware, obtenerPersonaPorId);
 router.put('/:id', authMiddleware, validarZod(actualizarPersonaSchema), actualizarPersona);
+router.patch('/:id/desactivar', authMiddleware, desactivarPersona);
 router.delete('/:id', authMiddleware, eliminarPersona);
 
 export default router;

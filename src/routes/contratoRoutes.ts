@@ -12,8 +12,11 @@ import { actualizarContratoSchema, crearContratoSchema } from '../schemas/contra
 
 const router = Router();
 
+// Rutas públicas (sin autenticación) - para visualización pública de contratos
 router.get('/', obtenerContratos);
 router.get('/:id', obtenerContratoPorId);
+
+// Rutas protegidas (requieren autenticación)
 
 router.post('/', authMiddleware, validarZod(crearContratoSchema), crearContrato);
 router.put('/:id', authMiddleware, validarZod(actualizarContratoSchema), actualizarContrato);

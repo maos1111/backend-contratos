@@ -5,7 +5,7 @@ import Persona from '../models/Persona';
 // @route   GET /api/personas
 export const obtenerPersonas = async (req: Request, res: Response): Promise<void> => {
   try {
-    const personas = await Persona.find();
+    const personas = await Persona.find({ activo: true });
     res.json(personas);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener personas', error: (error as Error).message });
@@ -84,5 +84,29 @@ export const eliminarPersona = async (req: Request, res: Response): Promise<void
     res.json({ mensaje: 'Persona eliminada correctamente' });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al eliminar persona', error: (error as Error).message });
+  }
+};
+
+// @desc    Desactivar una persona (baja lógica)
+// @route   PATCH /api/personas/:id/desactivar
+export const desactivarPersona = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const persona = await Persona.findById(req.params.id);
+    if (!persona) {
+      res.status(404).json({ mensaje: 'Persona no encontrada' });
+      return;
+    }
+
+    const personaDesactivada = await Persona.findByIdAndUpdate(
+      req.params.id,
+      { activo: false },
+      { new: true }
+    );
+
+    res.json({ mensaje: 'Persona desactivada correctamente', persona: personaDesactivada });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ mensaje: 'Error al desactivar persona', error: (error as Error).message });
   }
 };

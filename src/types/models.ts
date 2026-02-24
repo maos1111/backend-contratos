@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface IUsuario extends Document {
+  firebaseUid: string;
   nombre: string;
   email: string;
   password: string;
@@ -14,6 +15,7 @@ export interface IPersona extends Document {
   documento: string;
   email: string;
   telefono: string;
+  activo: boolean;
 }
 
 export interface IInmueble extends Document {
@@ -21,6 +23,7 @@ export interface IInmueble extends Document {
   descripcion: string;
   ubicacion: string;
   hectareas: number;
+  activo: boolean;
 }
 
 export interface IContrato extends Document {

@@ -5,7 +5,7 @@ import Inmueble from '../models/Inmueble';
 // @route   GET /api/inmuebles
 export const obtenerInmuebles = async (req: Request, res: Response): Promise<void> => {
   try {
-    const inmuebles = await Inmueble.find();
+    const inmuebles = await Inmueble.find({ activo: true });
     res.json(inmuebles);
   } catch (error) {
     res
@@ -87,5 +87,29 @@ export const eliminarInmueble = async (req: Request, res: Response): Promise<voi
     res
       .status(500)
       .json({ mensaje: 'Error al eliminar inmueble', error: (error as Error).message });
+  }
+};
+
+// @desc    Desactivar un inmueble (baja lógica)
+// @route   PATCH /api/inmuebles/:id/desactivar
+export const desactivarInmueble = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const inmueble = await Inmueble.findById(req.params.id);
+    if (!inmueble) {
+      res.status(404).json({ mensaje: 'Inmueble no encontrado' });
+      return;
+    }
+
+    const inmuebleDesactivado = await Inmueble.findByIdAndUpdate(
+      req.params.id,
+      { activo: false },
+      { new: true }
+    );
+
+    res.json({ mensaje: 'Inmueble desactivado correctamente', inmueble: inmuebleDesactivado });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ mensaje: 'Error al desactivar inmueble', error: (error as Error).message });
   }
 };

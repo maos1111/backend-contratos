@@ -28,7 +28,7 @@ const contratoSchema = new Schema<IContrato>(
     },
     fechaFin: {
       type: Date,
-      required: true,
+      required: false,
     },
     monto: {
       type: Number,

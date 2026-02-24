@@ -19,6 +19,10 @@ const inmuebleSchema = new Schema<IInmueble>(
     hectareas: {
       type: Number,
     },
+    activo: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

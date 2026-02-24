@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { Request, Response } from 'express';
 import { auth } from '../config/firebase';
+import Usuario from '../models/Usuario';
 
 interface FirebaseAuthResponse {
   idToken: string;
   refreshToken: string;
   expiresIn: string;
+  localId?: string;
   error?: {
     message: string;
   };
@@ -22,6 +24,15 @@ export const crearUsuario = async (req: Request, res: Response): Promise<void> =
       email,
       password,
       displayName: nombre,
+    });
+
+    // Guardar usuario en MongoDB con el UID de Firebase
+    await Usuario.create({
+      firebaseUid: userRecord.uid,
+      nombre,
+      email,
+      password: 'firebase_auth', // Password manejado por Firebase
+      rol: 'usuario',
     });
 
     res.status(201).json({
@@ -42,30 +53,39 @@ export const crearUsuario = async (req: Request, res: Response): Promise<void> =
 // @route   POST /api/usuarios/login
 export const loginUsuario = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email } = req.body;
+    const { email, password } = req.body;
 
-    // Buscar usuario por email
-    const userRecord = await auth.getUserByEmail(email);
+    if (!email || !password) {
+      res.status(400).json({ mensaje: 'Email y contraseña son requeridos' });
+      return;
+    }
 
-    // Generar custom token
-    const customToken = await auth.createCustomToken(userRecord.uid);
-
-    // Intercambiar customToken por idToken usando Firebase REST API
+    // Autenticar con Firebase usando email y password
     const { data } = await axios.post<FirebaseAuthResponse>(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${process.env.FIREBASE_API_KEY}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`,
       {
-        token: customToken,
+        email,
+        password,
         returnSecureToken: true,
       }
     );
 
+    if (data.error) {
+      res.status(401).json({ mensaje: 'Credenciales inválidas', error: data.error.message });
+      return;
+    }
+
+    // Buscar usuario en MongoDB por firebaseUid
+    const usuario = await Usuario.findOne({ firebaseUid: data.localId });
+
     res.json({
-      mensaje: 'Token generado exitosamente',
+      mensaje: 'Login exitoso',
       idToken: data.idToken,
       refreshToken: data.refreshToken,
       expiresIn: data.expiresIn,
-      uid: userRecord.uid,
-      email: userRecord.email,
+      uid: data.localId,
+      email,
+      nombre: usuario?.nombre,
     });
   } catch (error: any) {
     res.status(401).json({
