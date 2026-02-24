@@ -16,12 +16,8 @@ export const authMiddleware = async (
 
     const token = authHeader.split(' ')[1];
 
-    console.log('aca');
     // Verificar token con Firebase
     const decodedToken = await auth.verifyIdToken(token);
-    console.log('aca2');
-
-    console.log('Token verificado:', decodedToken);
 
     res.locals.usuario = {
       id: decodedToken.uid,
