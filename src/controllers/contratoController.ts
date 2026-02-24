@@ -48,6 +48,12 @@ export const crearContrato = async (req: Request, res: Response): Promise<void> 
   try {
     const { tipoContrato, locador, locatario, inmueble, fechaInicio, fechaFin, monto } = req.body;
 
+    // Validar que locador y locatario no sean la misma persona
+    if (locador === locatario) {
+      res.status(400).json({ mensaje: 'El locador y el locatario no pueden ser la misma persona' });
+      return;
+    }
+
     const locadorExiste = await Persona.findById(locador);
     if (!locadorExiste) {
       res.status(404).json({ mensaje: 'El locador no existe' });
@@ -96,6 +102,14 @@ export const actualizarContrato = async (req: Request, res: Response): Promise<v
     const contrato = await Contrato.findById(req.params.id);
     if (!contrato) {
       res.status(404).json({ mensaje: 'Contrato no encontrado' });
+      return;
+    }
+
+    // Validar que locador y locatario no sean la misma persona
+    const locadorFinal = req.body.locador || contrato.locador.toString();
+    const locatarioFinal = req.body.locatario || contrato.locatario.toString();
+    if (locadorFinal === locatarioFinal) {
+      res.status(400).json({ mensaje: 'El locador y el locatario no pueden ser la misma persona' });
       return;
     }
 

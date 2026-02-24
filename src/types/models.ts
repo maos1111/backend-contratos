@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface IUsuario extends Document {
+  firebaseUid: string;
   nombre: string;
   email: string;
   password: string;

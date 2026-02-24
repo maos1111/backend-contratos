@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { auth } from '../config/firebase';
+import Usuario from '../models/Usuario';
 
 export const authMiddleware = async (
   req: Request,
@@ -19,10 +20,24 @@ export const authMiddleware = async (
     // Verificar token con Firebase
     const decodedToken = await auth.verifyIdToken(token);
 
+    // Buscar usuario en MongoDB por firebaseUid
+    let usuario = await Usuario.findOne({ firebaseUid: decodedToken.uid });
+
+    // Si no existe, crearlo automáticamente (sync con Firebase)
+    if (!usuario) {
+      usuario = await Usuario.create({
+        firebaseUid: decodedToken.uid,
+        nombre: decodedToken.name || decodedToken.email?.split('@')[0] || 'Usuario',
+        email: decodedToken.email || '',
+        password: 'firebase_auth',
+        rol: 'usuario',
+      });
+    }
+
     res.locals.usuario = {
-      id: decodedToken.uid,
-      email: decodedToken.email,
-      rol: 'usuario',
+      id: usuario._id, // Usar el ObjectId de MongoDB
+      email: usuario.email,
+      rol: usuario.rol,
     };
 
     next();

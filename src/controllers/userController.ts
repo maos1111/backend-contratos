@@ -26,16 +26,14 @@ export const crearUsuario = async (req: Request, res: Response): Promise<void> =
       displayName: nombre,
     });
 
-    // Guardar usuario en MongoDB usando el UID de Firebase como _id
-    const usuarioMongo = new Usuario({
+    // Guardar usuario en MongoDB con el UID de Firebase
+    await Usuario.create({
+      firebaseUid: userRecord.uid,
       nombre,
       email,
       password: 'firebase_auth', // Password manejado por Firebase
       rol: 'usuario',
     });
-    // Asignar el UID de Firebase como _id
-    usuarioMongo._id = userRecord.uid as any;
-    await usuarioMongo.save();
 
     res.status(201).json({
       mensaje: 'Usuario creado exitosamente',
@@ -77,8 +75,8 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Buscar usuario en MongoDB para obtener información adicional
-    const usuario = await Usuario.findById(data.localId || data.idToken);
+    // Buscar usuario en MongoDB por firebaseUid
+    const usuario = await Usuario.findOne({ firebaseUid: data.localId });
 
     res.json({
       mensaje: 'Login exitoso',

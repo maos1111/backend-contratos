@@ -3,6 +3,11 @@ import { IUsuario } from '../types/models';
 
 const usuarioSchema = new Schema<IUsuario>(
   {
+    firebaseUid: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     nombre: {
       type: String,
       required: true,
